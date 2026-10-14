@@ -1,0 +1,11 @@
+{
+  "name": "iconnet-coverage",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "test": "node test/run.js" },
+  "dependencies": {
+    "@tmcw/togeojson": "5.8.1",
+    "@xmldom/xmldom": "0.8.10"
+  }
+}

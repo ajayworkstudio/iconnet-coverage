@@ -1,0 +1,17 @@
+import { readFileSync } from "node:fs";
+import assert from "node:assert";
+import { parseAreas, checkPoint, parseLocation, levelFromHex } from "../lib/coverage.js";
+const areas = parseAreas(readFileSync(new URL("./sample.kml", import.meta.url), "utf8"));
+assert.equal(areas.length, 2);
+const a = checkPoint(areas, -7.1035, 110.2780);
+assert.equal(a.covered, true); assert.equal(a.area.status.key, "yellow"); assert.equal(a.available, true);
+const b = checkPoint(areas, -6.99, 110.41);
+assert.equal(b.covered, true); assert.equal(b.available, false);
+const c = checkPoint(areas, -7.1035, 110.2850);
+assert.equal(c.covered, false); assert.equal(c.nearest.name, "TK 4_RJBTG_Kendal_9 Desa Salamsari");
+console.log("nearest m:", c.nearest.distanceM);
+assert.deepEqual(parseLocation("-7.1390, 110.4050"), { lat: -7.139, lng: 110.405 });
+assert.deepEqual(parseLocation("https://www.google.com/maps/place/X/@-7.0051,110.4381,17z/data=!3d-7.0052!4d110.4382"), { lat: -7.0052, lng: 110.4382 });
+assert.deepEqual(parseLocation("https://maps.google.com/?q=-7.0051,110.4381"), { lat: -7.0051, lng: 110.4381 });
+for (const [h,k] of [["#0F9D58","green"],["#7CB342","lime"],["#FFEA00","yellow"],["#FF9800","orange"],["#E65100","orange"],["#FF0000","red"],["#A52714","red"],["#000000","black"],["#097138","green"],["#558B2F","lime"]]) assert.equal(levelFromHex(h)?.key, k, h);
+console.log("semua tes lulus");

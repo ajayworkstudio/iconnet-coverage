@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Peta Coverage Iconnet Semarang</name>
+<Style id="poly-FFEA00-1200-77-normal"><LineStyle><color>ff00eaff</color><width>1.2</width></LineStyle><PolyStyle><color>4d00eaff</color><fill>1</fill><outline>1</outline></PolyStyle></Style>
+<StyleMap id="poly-FFEA00-1200-77"><Pair><key>normal</key><styleUrl>#poly-FFEA00-1200-77-normal</styleUrl></Pair><Pair><key>highlight</key><styleUrl>#poly-FFEA00-1200-77-normal</styleUrl></Pair></StyleMap>
+<Style id="poly-000000-1200-77-normal"><PolyStyle><color>4d000000</color></PolyStyle></Style>
+<StyleMap id="poly-000000-1200-77"><Pair><key>normal</key><styleUrl>#poly-000000-1200-77-normal</styleUrl></Pair></StyleMap>
+<Folder><name>BOUNDARY</name>
+<Placemark><name>TK 4_RJBTG_Kendal_9 Desa Salamsari</name><styleUrl>#poly-FFEA00-1200-77</styleUrl><Polygon><outerBoundaryIs><LinearRing><tessellate>1</tessellate><coordinates>
+110.2757155,-7.1016095,0 110.2759192,-7.1046758,0 110.2766488,-7.1055595,0 110.2800,-7.1050,0 110.2795,-7.1010,0 110.2757155,-7.1016095,0
+</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>
+<Placemark><name>Semarang 2</name><styleUrl>#poly-000000-1200-77</styleUrl><Polygon><outerBoundaryIs><LinearRing><coordinates>
+110.40,-7.00,0 110.42,-7.00,0 110.42,-6.98,0 110.40,-6.98,0 110.40,-7.00,0
+</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>
+</Folder></Document></kml>
