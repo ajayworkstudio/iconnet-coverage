@@ -148,6 +148,15 @@ textarea{resize:vertical;min-height:72px}
 .contact .num-big{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;user-select:all}
 footer{text-align:center;color:var(--muted);font-size:12.5px;padding-bottom:28px}
 
+/* Kunci tahap 2 */
+.fs{border:0;margin:0;padding:0;min-width:0;display:grid;gap:14px}
+.fs:disabled{opacity:.45;pointer-events:none;user-select:none}
+.fs:disabled input,.fs:disabled textarea{background:var(--bg)}
+input[readonly]{background:var(--bg);color:var(--muted)}
+.lock{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--tint);color:var(--blue-deep);font-size:13.5px}
+.lock svg{width:18px;height:18px;flex:none;margin-top:1px}
+.lock.warn{background:var(--no-tint);color:var(--no)}
+
 /* Paket slider */
 .pk-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .pk-nav{display:flex;gap:8px;flex:none}
@@ -403,9 +412,14 @@ body.lb-open{overflow:hidden}
 
     <form id="form-passive" novalidate>
       <div class="sub" id="tahap2">Tahap 2 · Data pelanggan</div>
+      <div class="lock" id="lock-note" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg>
+        <span id="lock-text">Data pelanggan bisa diisi setelah titik lokasi dicek dan dinyatakan <strong>tercover</strong>.</span>
+      </div>
+      <fieldset class="fs" id="tahap2-fs" disabled>
       <div class="grid2">
-        <div class="field"><label for="p-lokasi">Titik lokasi</label><input id="p-lokasi" name="Titik lokasi" required placeholder="Terisi otomatis setelah cek"></div>
-        <div class="field"><label for="p-area">Area coverage</label><input id="p-area" name="Area coverage" placeholder="Terisi otomatis setelah cek"></div>
+        <div class="field"><label for="p-lokasi">Titik lokasi</label><input id="p-lokasi" name="Titik lokasi" required readonly placeholder="Terisi otomatis setelah cek"></div>
+        <div class="field"><label for="p-area">Area coverage</label><input id="p-area" name="Area coverage" required readonly placeholder="Terisi otomatis setelah cek"></div>
       </div>
       <div class="grid2">
         <div class="field"><label for="p-idpln">ID PLN</label><input id="p-idpln" name="ID PLN" required inputmode="numeric" placeholder="12 digit ID pelanggan"></div>
@@ -437,6 +451,7 @@ body.lb-open{overflow:hidden}
         <button class="btn btn-primary" type="submit"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>Kirim data via WhatsApp</button>
         <button class="btn btn-line" type="button" data-copy="form-passive">Salin data</button>
       </div>
+      </fieldset>
     </form>
   </section>
 
@@ -525,6 +540,7 @@ body.lb-open{overflow:hidden}
     form.addEventListener("submit", function(e){
       e.preventDefault();
       var err = document.getElementById(errs[form.id]);
+      if (form.id === "form-passive" && document.getElementById("tahap2-fs").disabled){ return; }
       if (!valid(form)){ err.hidden = false; return; }
       err.hidden = true;
       openWA(build(form));
@@ -586,13 +602,39 @@ body.lb-open{overflow:hidden}
     out.className = "result " + cls;
     out.innerHTML = html;
     out.hidden = false;
-    document.getElementById("p-lokasi").value = loc;
-    document.getElementById("p-area").value = d.covered ? d.area.name + (d.area.status ? " (" + d.area.status.label + ")" : "") : "Belum tercover";
+    if (d.covered && d.available !== false){
+      document.getElementById("p-lokasi").value = loc;
+      document.getElementById("p-area").value = d.area.name + (d.area.status ? " (" + d.area.status.label + ")" : "");
+      setLock(false);
+    } else if (d.covered){
+      setLock(true, "Area <strong>" + esc(d.area.name) + "</strong> sudah penuh. Data pelanggan belum bisa diisi untuk titik ini.", true);
+    } else {
+      setLock(true, "Titik ini <strong>belum tercover</strong>. Data pelanggan hanya bisa diisi untuk lokasi yang tercover.", true);
+    }
   }
+
+  var fs = document.getElementById("tahap2-fs");
+  var lockNote = document.getElementById("lock-note"), lockText = document.getElementById("lock-text");
+  var LOCK_DEFAULT = lockText.innerHTML;
+  function setLock(locked, msg, warn){
+    fs.disabled = locked;
+    lockNote.hidden = !locked;
+    lockNote.classList.toggle("warn", !!warn);
+    lockText.innerHTML = msg || LOCK_DEFAULT;
+    if (locked){
+      document.getElementById("p-lokasi").value = "";
+      document.getElementById("p-area").value = "";
+    }
+  }
+  koor.addEventListener("input", function(){
+    if (!fs.disabled || last){ last = null; out.hidden = true; setLock(true); }
+  });
 
   function cek(query){
     errCek.hidden = true;
     out.hidden = true;
+    last = null;
+    setLock(true);
     setBusy(true);
     fetch(API + "?" + query)
       .then(function(r){ return r.json().catch(function(){ return { ok:false, error:"Server tidak merespons dengan benar." }; }); })
