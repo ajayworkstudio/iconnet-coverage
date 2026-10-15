@@ -68,6 +68,21 @@ Contoh jawaban:
 - Kalau titik masuk ke beberapa area yang tumpang tindih, API memilih area yang paling longgar.
 - API hanya mengembalikan nama area dan status. Bentuk polygon tidak ikut terkirim ke pengguna.
 
+## Widget untuk situs lain (misalnya jatengwifipln.com)
+
+Tempel dua baris ini di HTML halaman, di tempat widget mau muncul:
+
+```html
+<div id="iconnet-cek"></div>
+<script src="https://iconnet-coverage.vercel.app/widget.js" defer></script>
+```
+
+Opsi tambahan di `div`:
+- `data-wa="6281339646353"` untuk nomor WhatsApp tujuan.
+- `data-title="Cek jaringan ICONNET"` untuk mengganti judul widget.
+
+Contoh tampilannya ada di `/contoh-widget.html`. Widget memakai font Plus Jakarta Sans kalau situsnya sudah memuat font itu. Kalau belum, widget memakai font sistem.
+
 ## Pengaturan (Environment Variables di Vercel)
 
 | Nama | Default | Keterangan |
