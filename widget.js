@@ -14,7 +14,6 @@
   var host = document.getElementById("iconnet-cek");
   if (!host || host.dataset.ready) return;
   host.dataset.ready = "1";
-  var WA = (host.dataset.wa || "6281339646353").replace(/\D/g, "");
   var TITLE = host.dataset.title || "Cek ketersediaan ICONNET di rumahmu";
 
   var css =
@@ -101,8 +100,13 @@
     gps.disabled = b;
     btn.innerHTML = b ? '<span class="icw-spin"></span>' : "Cek";
   }
+  // Dibaca saat tombol dibuat, jadi data-wa yang diubah belakangan (misalnya oleh
+  // link marketer di situs pemasang) tetap terpakai.
+  function waNumber() {
+    return (host.dataset.wa || "6281339646353").replace(/\D/g, "");
+  }
   function waLink(text) {
-    return "https://wa.me/" + WA + "?text=" + encodeURIComponent(text);
+    return "https://wa.me/" + waNumber() + "?text=" + encodeURIComponent(text);
   }
 
   function render(d) {
